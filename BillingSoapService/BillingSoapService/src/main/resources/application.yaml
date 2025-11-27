@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: BillingSoapService
+  profiles:
+    active: prod

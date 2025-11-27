@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://billingSoapApp.com/billing"
+           xmlns:tns="http://billingSoapApp.com/billing"
+           elementFormDefault="qualified">
+
+    <!-- ===== INVOICE REQUEST/RESPONSE ELEMENTS ===== -->
+
+    <!-- CreateInvoice Request -->
+    <xs:element name="CreateInvoiceRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="clientId" type="xs:long"/>
+                <xs:element name="amount" type="xs:decimal"/>
+                <xs:element name="description" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- CreateInvoice Response -->
+    <xs:element name="CreateInvoiceResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="invoiceId" type="xs:long"/>
+                <xs:element name="status" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- GetInvoiceById Request -->
+    <xs:element name="GetInvoiceByIdRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="id" type="xs:long"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- GetInvoiceById Response -->
+    <xs:element name="GetInvoiceByIdResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="invoice" type="tns:InvoiceType"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- PayInvoice Request -->
+    <xs:element name="PayInvoiceRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="id" type="xs:long"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- PayInvoice Response -->
+    <xs:element name="PayInvoiceResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="status" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- ListClientInvoices Request -->
+    <xs:element name="ListClientInvoicesRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="clientId" type="xs:long"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- ListClientInvoices Response -->
+    <xs:element name="ListClientInvoicesResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="invoice" type="tns:InvoiceType" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- GetClientTotal Request -->
+    <xs:element name="GetClientTotalRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="clientId" type="xs:long"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- GetClientTotal Response -->
+    <xs:element name="GetClientTotalResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="totalAmount" type="xs:decimal"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- ===== CLIENT REQUEST/RESPONSE ELEMENTS ===== -->
+
+    <!-- CreateClient Request -->
+    <xs:element name="CreateClientRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="name" type="xs:string"/>
+                <xs:element name="email" type="xs:string"/>
+                <xs:element name="phone" type="xs:string" minOccurs="0"/>
+                <xs:element name="address" type="xs:string" minOccurs="0"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- CreateClient Response -->
+    <xs:element name="CreateClientResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="client" type="tns:Client"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- ===== COMPLEX TYPES ===== -->
+
+    <!-- Invoice Type -->
+    <xs:complexType name="InvoiceType">
+        <xs:sequence>
+            <xs:element name="id" type="xs:long"/>
+            <xs:element name="clientId" type="xs:long"/>
+            <xs:element name="amount" type="xs:decimal"/>
+            <xs:element name="description" type="xs:string"/>
+            <xs:element name="dateEmission" type="xs:date"/>
+            <xs:element name="datePaiement" type="xs:date" minOccurs="0"/>
+            <xs:element name="status" type="tns:InvoiceStatus"/>
+            <xs:element name="paymentMethod" type="tns:PaymentMethod" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- Client Type -->
+    <xs:complexType name="Client">
+        <xs:sequence>
+            <xs:element name="clientId" type="xs:long"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="email" type="xs:string"/>
+            <xs:element name="phone" type="xs:string" minOccurs="0"/>
+            <xs:element name="address" type="xs:string" minOccurs="0"/>
+            <xs:element name="createdDate" type="xs:date" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- Invoice Status Enumeration -->
+    <xs:simpleType name="InvoiceStatus">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="PENDING"/>
+            <xs:enumeration value="PAID"/>
+            <xs:enumeration value="CANCELLED"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- Payment Method Enumeration -->
+    <xs:simpleType name="PaymentMethod">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="CARD"/>
+            <xs:enumeration value="TRANSFER"/>
+            <xs:enumeration value="CASH"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- ===== FAULT ELEMENTS ===== -->
+
+    <!-- Error Response -->
+    <xs:element name="ErrorResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="errorCode" type="xs:string"/>
+                <xs:element name="errorMessage" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

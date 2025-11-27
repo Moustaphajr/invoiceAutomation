@@ -1,0 +1,9 @@
+spring:
+  profiles:
+    active: prod
+
+  flyway:
+    user: Ahmadou
+    password: passer123
+    url: jdbc:postgresql://localhost:5432/billingdb
+    baseline-on-migrate: true
