@@ -3,8 +3,8 @@ version: "3.8"
 services:
   # Application REST (BillingApp)
   billing-rest:
-    image: b
-    container_name: moustaphajr80/billingautomation:billing-automation
+    image: moustaphajr80/billingautomation:billing-automation
+    container_name: billing-rest-api
     restart: always
     ports:
       - "8087:8087"
