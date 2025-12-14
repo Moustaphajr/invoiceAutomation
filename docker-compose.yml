@@ -1,0 +1,95 @@
+version: "3.8"
+
+services:
+  # Application REST (BillingApp)
+  billing-rest:
+    image: b
+    container_name: moustaphajr80/billingautomation:billing-automation
+    restart: always
+    ports:
+      - "8087:8087"
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+
+      DATABASE_URL: jdbc:postgresql://host.docker.internal:5432/billingdb
+      DB_USERNAME: Ahmadou
+      DB_PASSWORD: passer123
+
+      SERVER_PORT: 8087
+
+      JPA_DDL_AUTO: update
+      JPA_SHOW_SQL: true
+
+      FLYWAY_ENABLED: true
+
+      LOG_LEVEL: INFO
+
+      DB_POOL_SIZE: 10
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:8087/actuator/health",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - billing-network
+
+  # Application SOAP (BillingSoap)
+  billing-soap:
+    image: moustaphajr80/billingautomation:latest
+    container_name: billing-soap-service
+    restart: always
+    ports:
+      - "8089:8089"
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+
+      DATABASE_URL: jdbc:postgresql://host.docker.internal:5432/billingdb
+      DB_USERNAME: Ahmadou
+      DB_PASSWORD: passer123
+
+      SERVER_PORT: 8089
+
+      # JPA
+      JPA_DDL_AUTO: update
+      JPA_SHOW_SQL: true
+
+      FLYWAY_ENABLED: false
+
+      LOG_LEVEL: INFO
+
+      SOAP_SERVICE_URL: http://billing-soap:8089/ws/billing.wsdl
+
+      DB_POOL_SIZE: 10
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:8088/actuator/health",
+        ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - billing-network
+
+networks:
+  billing-network:
+    driver: bridge

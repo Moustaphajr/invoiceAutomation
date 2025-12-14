@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api name="BillingAPIRest" context="/api/v2/billing" xmlns="http://ws.apache.org/ns/synapse">
+    <resource methods="POST" uri-template="/invoices">
+        <inSequence>
+           
+            <send>
+                <endpoint>
+                    <http uri-template="http://localhost:8087/api"/>
+                </endpoint>
+            </send>
+        </inSequence>
+        <outSequence>
+            <send/>
+        </outSequence>
+        <faultSequence>
+            <!-- Gère les erreurs -->
+            <send/>
+        </faultSequence>
+    </resource>
+    <resource methods="GET" uri-template="/invoices/{id}">
+        <inSequence>
+              <send>
+                <endpoint>
+                    <http uri-template="http://localhost:8087/api"/>
+                </endpoint>
+            </send>
+        </inSequence>
+         <outSequence>
+            <send/>
+        </outSequence>
+        <faultSequence>
+            <send/>
+        </faultSequence>
+    </resource>
+    <resource methods="PUT" uri-template="/invoices/{id}/pay">
+        <inSequence>
+            <send>
+                <endpoint>
+                    <http uri-template="http://localhost:8087/api"/>
+                </endpoint>
+            </send>
+        </inSequence>
+        <outSequence>
+            <send/>
+        </outSequence>
+        <faultSequence
+        >
+            <send/>
+        </faultSequence>
+    </resource>
+    <resource methods="POST" uri-template="/clients">
+        <inSequence>
+            <send>
+                <endpoint>
+                    <http uri-template="http://localhost:8087/api"/>
+                </endpoint>
+            </send>
+        </inSequence>
+        <outSequence>
+            <send/>
+        </outSequence>
+        <faultSequence>
+            <send/>
+        </faultSequence>
+    </resource>
+    <resource methods="GET" uri-template="/clients/{clientId}/invoices">
+        <inSequence>
+            <send>
+                <endpoint>
+                    <http uri-template="http://localhost:8087/api"/>
+                </endpoint>
+            </send>
+        </inSequence>
+        <outSequence>
+            <send/>
+        </outSequence>
+        <faultSequence>
+            <send/>
+        </faultSequence>
+    </resource>
+    <resource methods="GET" uri-template="/clients/{clientId}/total">
+        <inSequence>
+            <send>
+                <endpoint>
+                    <http uri-template="http://localhost:8087/api"/>
+                </endpoint>
+            </send>
+        </inSequence>
+        <outSequence>
+            <send/>
+        </outSequence>
+        <faultSequence>
+            <send/>
+        </faultSequence>
+    </resource>
+</api>

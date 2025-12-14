@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api name="BillingSoap" context="/api/legacy/billing" version="1.0.0" version-type="context" xmlns="http://ws.apache.org/ns/synapse">
+    <resource methods="POST" url-mapping="/payInvoice">
+        <inSequence>
+            <property name="REST_URL_POSTFIX" scope="axis2" action="remove"/>
+            <payloadFactory media-type="xml" template-type="freemarker">
+                <format><![CDATA[<soapenv:Envelope xmlns:soapenv="http://www.w3.org/2003/05/soap-envelope">
+<soapenv:Header/>
+<soapenv:Body>
+<web:PayInvoiceRequest xmlns:web="http://billingSoapApp.com/billing"><web:id>${payload.PayInvoiceRequest.id}</web:id></web:PayInvoiceRequest></soapenv:Body>
+</soapenv:Envelope>
+]]></format><args/>
+            </payloadFactory><property name="messageType" value="application/soap+xml" scope="axis2" type="STRING"/><call><endpoint key="BillingSoap_SOAP_ENDPOINT"/>
+            </call><property name="messageType" value="application/json" scope="axis2" type="STRING"/><respond/>
+        </inSequence><outSequence/><faultSequence/>
+    </resource><resource methods="POST" url-mapping="/getInvoiceById"><inSequence><property name="REST_URL_POSTFIX" scope="axis2" action="remove"/><payloadFactory media-type="xml" template-type="freemarker"><format><![CDATA[<soapenv:Envelope xmlns:soapenv="http://www.w3.org/2003/05/soap-envelope">
+<soapenv:Header/>
+<soapenv:Body>
+<web:GetInvoiceByIdRequest xmlns:web="http://billingSoapApp.com/billing"><web:id>${payload.GetInvoiceByIdRequest.id}</web:id></web:GetInvoiceByIdRequest></soapenv:Body>
+</soapenv:Envelope>
+]]></format><args/>
+            </payloadFactory><property name="messageType" value="application/soap+xml" scope="axis2" type="STRING"/><call><endpoint key="BillingSoap_SOAP_ENDPOINT"/>
+            </call><property name="messageType" value="application/json" scope="axis2" type="STRING"/><respond/>
+        </inSequence><outSequence/><faultSequence/>
+    </resource><resource methods="POST" url-mapping="/createClient"><inSequence><property name="REST_URL_POSTFIX" scope="axis2" action="remove"/><payloadFactory media-type="xml" template-type="freemarker"><format><![CDATA[<soapenv:Envelope xmlns:soapenv="http://www.w3.org/2003/05/soap-envelope">
+<soapenv:Header/>
+<soapenv:Body>
+<web:CreateClientRequest xmlns:web="http://billingSoapApp.com/billing"><web:name>${payload.CreateClientRequest.name}</web:name><web:email>${payload.CreateClientRequest.email}</web:email><#if payload.CreateClientRequest.phone?has_content><web:phone>${payload.CreateClientRequest.phone}</web:phone></#if><#if payload.CreateClientRequest.address?has_content><web:address>${payload.CreateClientRequest.address}</web:address></#if></web:CreateClientRequest></soapenv:Body>
+</soapenv:Envelope>
+]]></format><args/>
+            </payloadFactory><property name="messageType" value="application/soap+xml" scope="axis2" type="STRING"/><call><endpoint key="BillingSoap_SOAP_ENDPOINT"/>
+            </call><property name="messageType" value="application/json" scope="axis2" type="STRING"/><respond/>
+        </inSequence><outSequence/><faultSequence/>
+    </resource><resource methods="POST" url-mapping="/createInvoice"><inSequence><property name="REST_URL_POSTFIX" scope="axis2" action="remove"/><payloadFactory media-type="xml" template-type="freemarker"><format><![CDATA[<soapenv:Envelope xmlns:soapenv="http://www.w3.org/2003/05/soap-envelope">
+<soapenv:Header/>
+<soapenv:Body>
+<web:CreateInvoiceRequest xmlns:web="http://billingSoapApp.com/billing"><web:clientId>${payload.CreateInvoiceRequest.clientId}</web:clientId><web:amount>${payload.CreateInvoiceRequest.amount}</web:amount><web:description>${payload.CreateInvoiceRequest.description}</web:description></web:CreateInvoiceRequest></soapenv:Body>
+</soapenv:Envelope>
+]]></format><args/>
+            </payloadFactory><property name="messageType" value="application/soap+xml" scope="axis2" type="STRING"/><call><endpoint key="BillingSoap_SOAP_ENDPOINT"/>
+            </call><property name="messageType" value="application/json" scope="axis2" type="STRING"/><respond/>
+        </inSequence><outSequence/><faultSequence/>
+    </resource><resource methods="POST" url-mapping="/getClientTotal"><inSequence><property name="REST_URL_POSTFIX" scope="axis2" action="remove"/><payloadFactory media-type="xml" template-type="freemarker"><format><![CDATA[<soapenv:Envelope xmlns:soapenv="http://www.w3.org/2003/05/soap-envelope">
+<soapenv:Header/>
+<soapenv:Body>
+<web:GetClientTotalRequest xmlns:web="http://billingSoapApp.com/billing"><web:clientId>${payload.GetClientTotalRequest.clientId}</web:clientId></web:GetClientTotalRequest></soapenv:Body>
+</soapenv:Envelope>
+]]></format><args/>
+            </payloadFactory><property name="messageType" value="application/soap+xml" scope="axis2" type="STRING"/><call><endpoint key="BillingSoap_SOAP_ENDPOINT"/>
+            </call><property name="messageType" value="application/json" scope="axis2" type="STRING"/><respond/>
+        </inSequence><outSequence/><faultSequence/>
+    </resource><resource methods="POST" url-mapping="/listClientInvoices"><inSequence><property name="REST_URL_POSTFIX" scope="axis2" action="remove"/><payloadFactory media-type="xml" template-type="freemarker"><format><![CDATA[<soapenv:Envelope xmlns:soapenv="http://www.w3.org/2003/05/soap-envelope">
+<soapenv:Header/>
+<soapenv:Body>
+<web:ListClientInvoicesRequest xmlns:web="http://billingSoapApp.com/billing"><web:clientId>${payload.ListClientInvoicesRequest.clientId}</web:clientId></web:ListClientInvoicesRequest></soapenv:Body>
+</soapenv:Envelope>
+]]></format><args/>
+            </payloadFactory><property name="messageType" value="application/soap+xml" scope="axis2" type="STRING"/><call><endpoint key="BillingSoap_SOAP_ENDPOINT"/>
+            </call><property name="messageType" value="application/json" scope="axis2" type="STRING"/><respond/>
+        </inSequence><outSequence/><faultSequence/>
+    </resource><resource methods="POST" url-mapping="/error"><inSequence><property name="REST_URL_POSTFIX" scope="axis2" action="remove"/><payloadFactory media-type="xml" template-type="freemarker"><format><![CDATA[<soapenv:Envelope xmlns:soapenv="http://www.w3.org/2003/05/soap-envelope">
+<soapenv:Header/>
+<soapenv:Body>
+<web:Error xmlns:web="http://billingSoapApp.com/billing"/></soapenv:Body>
+</soapenv:Envelope>
+]]></format><args/>
+            </payloadFactory><property name="messageType" value="application/soap+xml" scope="axis2" type="STRING"/><call><endpoint key="BillingSoap_SOAP_ENDPOINT"/>
+            </call><property name="messageType" value="application/json" scope="axis2" type="STRING"/><respond/>
+        </inSequence><outSequence/><faultSequence/>
+    </resource>
+</api>

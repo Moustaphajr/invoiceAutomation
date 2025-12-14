@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="FetchBRVMDataSequence" xmlns="http://ws.apache.org/ns/synapse">
+    <log category="INFO">
+        <message>Starting BRVM data fetch</message>
+    </log>
+    
+    <!-- Fetch Indices -->
+    <http.get configKey="FastAPIConnection">
+        <relativePath>/api/market/indices</relativePath>
+        <headers>[]</headers>
+        <responseVariable>indicesData</responseVariable>
+    </http.get>
+    
+    <!-- Fetch Stocks -->
+    <http.get configKey="FastAPIConnection">
+        <relativePath>/api/market/stocks</relativePath>
+        <headers>[]</headers>
+        <responseVariable>stocksData</responseVariable>
+    </http.get>
+    
+    <!-- Store Indices in PostgreSQL -->
+    <variable name="timestamp" expression="${now()}" type="STRING"/>
+    
+    <foreach expression="${vars.indicesData.*}">
+        <sequence>
+            <variable name="indexName" expression="${payload.@key}" type="STRING"/>
+            <variable name="indexValue" expression="${payload.value}" type="STRING"/>
+            <variable name="indexVariation" expression="${payload.variation}" type="STRING"/>
+            
+            <dbreport>
+                <connection>
+                    <pool>
+                        <driver>org.postgresql.Driver</driver>
+                        <url>jdbc:postgresql://localhost:5432/brvm_db</url>
+                        <user>your_db_user</user>
+                        <password>your_db_password</password>
+                    </pool>
+                </connection>
+                <statement>
+                    <sql>INSERT INTO market_indices (index_name, value, variation, timestamp) VALUES (?, ?, ?, ?)</sql>
+                    <parameter expression="${vars.indexName}" type="VARCHAR"/>
+                    <parameter expression="${vars.indexValue}" type="DECIMAL"/>
+                    <parameter expression="${vars.indexVariation}" type="VARCHAR"/>
+                    <parameter expression="${vars.timestamp}" type="TIMESTAMP"/>
+                </statement>
+            </dbreport>
+        </sequence>
+    </foreach>
+    
+    <!-- Store Stocks in PostgreSQL -->
+    <foreach expression="${vars.stocksData}">
+        <sequence>
+            <variable name="symbol" expression="${payload.symbol}" type="STRING"/>
+            <variable name="price" expression="${payload.price}" type="STRING"/>
+            <variable name="variation" expression="${payload.variation}" type="STRING"/>
+            
+            <dbreport>
+                <connection>
+                    <pool>
+                        <driver>org.postgresql.Driver</driver>
+                        <url>jdbc:postgresql://localhost:5432/brvm_db</url>
+                        <user>your_db_user</user>
+                        <password>your_db_password</password>
+                    </pool>
+                </connection>
+                <statement>
+                    <sql>INSERT INTO stock_prices (symbol, price, variation, timestamp) VALUES (?, ?, ?, ?)</sql>
+                    <parameter expression="${vars.symbol}" type="VARCHAR"/>
+                    <parameter expression="${vars.price}" type="DECIMAL"/>
+                    <parameter expression="${vars.variation}" type="VARCHAR"/>
+                    <parameter expression="${vars.timestamp}" type="TIMESTAMP"/>
+                </statement>
+            </dbreport>
+        </sequence>
+    </foreach>
+    
+    <log category="INFO">
+        <message>BRVM data stored successfully</message>
+    </log>
+</sequence>

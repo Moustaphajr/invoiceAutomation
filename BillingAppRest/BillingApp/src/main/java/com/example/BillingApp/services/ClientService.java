@@ -64,8 +64,11 @@ public class ClientService {
     public BigDecimal getClientTotal(Long clientId) {
         Client client = this.findClientById(clientId);
         return client.getInvoices().stream()
+                .filter(invoice -> invoice.getStatus().equals("PAID"))
                 .map(invoice -> invoice.getAmount())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-                
-    } 
+
+    }
+    
+   
 }

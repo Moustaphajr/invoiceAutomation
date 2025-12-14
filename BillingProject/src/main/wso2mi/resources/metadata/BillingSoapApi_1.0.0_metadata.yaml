@@ -1,0 +1,10 @@
+---
+key: "BillingSoapApi-1.0.0"
+name : "BillingSoapApi"
+displayName : "BillingSoapApi"
+description: "BillingSoapApi"
+version: "1.0.0"
+serviceUrl: "https://{MI_HOST}:{MI_PORT}/default"
+definitionType: "OAS3"
+securityType: "BASIC"
+mutualSSLEnabled: false

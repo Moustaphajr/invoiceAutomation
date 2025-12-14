@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.Serializable;
 import java.util.Map;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/api")
@@ -56,6 +59,18 @@ public class InvoiceController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/invoices/unpaid")
+    private ResponseEntity<Map<String, Object>> getUnpaidInvoicesAfterFifteenDays() {
+        try {
+            var clients = invoiceService.checkUnpaidInvoicesAfterFifteenDays();
+            return ResponseEntity.status(200).body(Map.of("clients", clients));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+   
+    
 
 
 }

@@ -1,0 +1,30 @@
+openapi: 3.0.1
+info:
+  title: BRVMDataAPI
+  description: API Definition of BRVMDataAPI
+  version: 1.0.0
+servers:
+- url: http://localhost:8290/brvm
+- url: https://localhost:8253/brvm
+paths:
+  /indices:
+    get:
+      responses:
+        default:
+          description: Default response
+  /stocks:
+    get:
+      responses:
+        default:
+          description: Default response
+  /stocks/{symbol}:
+    get:
+      parameters:
+      - name: symbol
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          description: Default response

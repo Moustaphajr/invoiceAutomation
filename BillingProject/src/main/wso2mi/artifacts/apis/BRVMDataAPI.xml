@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api name="BRVMDataAPI" context="/brvm" xmlns="http://ws.apache.org/ns/synapse">
+    
+    <!-- Get Latest Indices -->
+    <resource methods="GET" uri-template="/indices">
+        <inSequence>
+            <dblookup>
+                <connection>
+                    <pool>
+                        <driver>org.postgresql.Driver</driver>
+                        <url>jdbc:postgresql://localhost:5432/brvm_db</url>
+                        <user>your_db_user</user>
+                        <password>your_db_password</password>
+                    </pool>
+                </connection>
+                <statement>
+                    <sql>SELECT json_agg(json_build_object('index_name', index_name, 'value', value, 'variation', variation, 'timestamp', timestamp)) FROM market_indices WHERE timestamp = (SELECT MAX(timestamp) FROM market_indices)</sql>
+                    <result name="indices" column="1"/>
+                </statement>
+            </dblookup>
+            
+            <payloadFactory media-type="json">
+                <format>
+                    {
+                        "indices": ${props.synapse.indices}
+                    }
+                </format>
+            </payloadFactory>
+            
+            <respond/>
+        </inSequence>
+        <faultSequence>
+            <log category="ERROR">
+                <message>Error fetching indices: ${props.synapse.ERROR_MESSAGE}</message>
+            </log>
+            <payloadFactory media-type="json">
+                <format>
+                    {
+                        "error": "Failed to fetch indices"
+                    }
+                </format>
+            </payloadFactory>
+            <respond/>
+        </faultSequence>
+    </resource>
+    
+    <!-- Get Latest Stocks -->
+    <resource methods="GET" uri-template="/stocks">
+        <inSequence>
+            <dblookup>
+                <connection>
+                    <pool>
+                        <driver>org.postgresql.Driver</driver>
+                        <url>jdbc:postgresql://localhost:5432/brvm_db</url>
+                        <user>your_db_user</user>
+                        <password>your_db_password</password>
+                    </pool>
+                </connection>
+                <statement>
+                    <sql>SELECT json_agg(json_build_object('symbol', symbol, 'price', price, 'variation', variation, 'timestamp', timestamp)) FROM stock_prices WHERE timestamp = (SELECT MAX(timestamp) FROM stock_prices)</sql>
+                    <result name="stocks" column="1"/>
+                </statement>
+            </dblookup>
+            
+            <payloadFactory media-type="json">
+                <format>
+                    {
+                        "stocks": ${props.synapse.stocks}
+                    }
+                </format>
+            </payloadFactory>
+            
+            <respond/>
+        </inSequence>
+        <faultSequence>
+            <log category="ERROR">
+                <message>Error fetching stocks: ${props.synapse.ERROR_MESSAGE}</message>
+            </log>
+            <payloadFactory media-type="json">
+                <format>
+                    {
+                        "error": "Failed to fetch stocks"
+                    }
+                </format>
+            </payloadFactory>
+            <respond/>
+        </faultSequence>
+    </resource>
+    
+    <!-- Get Stock by Symbol -->
+    <resource methods="GET" uri-template="/stocks/{symbol}">
+        <inSequence>
+            <variable name="symbol" expression="${params.pathParams.symbol}" type="STRING"/>
+            
+            <dblookup>
+                <connection>
+                    <pool>
+                        <driver>org.postgresql.Driver</driver>
+                        <url>jdbc:postgresql://localhost:5432/brvm_db</url>
+                        <user>your_db_user</user>
+                        <password>your_db_password</password>
+                    </pool>
+                </connection>
+                <statement>
+                    <sql>SELECT json_agg(json_build_object('symbol', symbol, 'price', price, 'variation', variation, 'timestamp', timestamp)) FROM stock_prices WHERE symbol = ? ORDER BY timestamp DESC LIMIT 10</sql>
+                    <parameter expression="${vars.symbol}" type="VARCHAR"/>
+                    <result name="stockHistory" column="1"/>
+                </statement>
+            </dblookup>
+            
+            <payloadFactory media-type="json">
+                <format>
+                    {
+                        "symbol": "${vars.symbol}",
+                        "history": ${props.synapse.stockHistory}
+                    }
+                </format>
+            </payloadFactory>
+            
+            <respond/>
+        </inSequence>
+        <faultSequence>
+            <log category="ERROR">
+                <message>Error fetching stock history: ${props.synapse.ERROR_MESSAGE}</message>
+            </log>
+            <payloadFactory media-type="json">
+                <format>
+                    {
+                        "error": "Failed to fetch stock history"
+                    }
+                </format>
+            </payloadFactory>
+            <respond/>
+        </faultSequence>
+    </resource>
+</api>

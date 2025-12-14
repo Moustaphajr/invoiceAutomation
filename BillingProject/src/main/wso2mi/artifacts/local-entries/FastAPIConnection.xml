@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<localEntry key="FastAPIConnection" xmlns="http://ws.apache.org/ns/synapse">
+    <http.init>
+        <connectionType>http</connectionType>
+        <baseUrl>http://localhost:8000</baseUrl>
+        <name>FastAPIConnection</name>
+    </http.init>
+</localEntry>

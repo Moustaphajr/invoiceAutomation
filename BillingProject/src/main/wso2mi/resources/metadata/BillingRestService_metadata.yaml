@@ -1,0 +1,10 @@
+---
+key: "BillingRestService-1.0.0"
+name : "BillingRestService"
+displayName : "BillingRestService"
+description: "BillingRestService"
+version: "1.0.0"
+serviceUrl: "https://{MI_HOST}:{MI_PORT}/api/v2/billing"
+definitionType: "OAS3"
+securityType: "BASIC"
+mutualSSLEnabled: false
